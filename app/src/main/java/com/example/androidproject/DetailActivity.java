@@ -3,7 +3,10 @@ package com.example.androidproject;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -19,6 +22,7 @@ import com.example.androidproject.adapter.DetailAdapter;
 import com.example.androidproject.databinding.ActivityDetailBinding;
 import com.example.androidproject.db.DBHelper;
 import com.example.androidproject.model.Student;
+import com.example.androidproject.util.BitmapUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,6 +35,7 @@ public class DetailActivity extends AppCompatActivity {
     Student student;
     ArrayList<Map<String, String>> scoreList;
     DetailAdapter adapter;
+    ActivityResultLauncher<Intent> requestGalleryLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +80,41 @@ public class DetailActivity extends AppCompatActivity {
             intent.putExtra("id", id);
             addScoreLauncher.launch(intent);
         });
+
+        requestGalleryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    try {
+                        // 갤러리 앱에서 사진 선택 후 되돌아 온 상황
+                        // 유저가 선택한 사진의 식별자 값을 Uri 객체로 념겨줌
+                        Uri uri = result.getData().getData();
+                        // uri 로 식별되는 사진의 경로를 획득, db 에 저장했다가 나중에 이용하기 위해
+                        String[] proj = new String[] {MediaStore.Images.Media.DATA};
+                        Cursor galleryCursor = getContentResolver().query(
+                                uri, proj, null, null, null
+                        );
+                        if (galleryCursor != null) {
+                            if (galleryCursor.moveToNext()) {
+                                // 사진 경로 얻기
+                                String filePath = galleryCursor.getString(0);
+                                // 테이블에 데이터 저장
+                                DBHelper helper = new DBHelper(this);
+                                SQLiteDatabase db = helper.getWritableDatabase();
+                                db.execSQL("update tb_student set photo=? where _id=?",
+                                        new String[]{filePath, String.valueOf(id)});
+                                db.close();
+                            }
+                        }
+                        Bitmap bitmap = BitmapUtil.getGalleryBitmapFromStream(this, uri);
+
+                        if (bitmap != null) {
+                            binding.detailImage.setImageBitmap(bitmap);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
     }
 
     private void setInitScoreData(int id) {
@@ -123,5 +163,12 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         db.close();
+
+        binding.detailImage.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_PICK,
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.setType("image/*");
+            requestGalleryLauncher.launch(intent);
+        });
     }
 }

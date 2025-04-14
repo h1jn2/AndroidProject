@@ -1,5 +1,7 @@
 package com.example.androidproject.util;
 
+import android.os.Build;
+
 import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -13,6 +15,13 @@ public class PermissionUtil {
     public static void checkAllPermission(ComponentActivity activity, PermissionCallback callback) {
         HashSet<String> permissionSet = new HashSet<>();
         permissionSet.add("android.permission.CALL_PHONE");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionSet.add("android.permission.READ_MEDIA_IMAGES");
+        } else {
+            permissionSet.add("android.permission.READ_EXTERNAL_STORAGE");
+        }
+
         ActivityResultLauncher<String[]> launcher = activity.registerForActivityResult(
                 new ActivityResultContracts.RequestMultiplePermissions(),
                 result -> {
