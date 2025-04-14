@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.androidproject.DetailActivity;
 import com.example.androidproject.R;
 import com.example.androidproject.databinding.ItemMainBinding;
 import com.example.androidproject.model.Student;
@@ -61,6 +62,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainViewHolder> {
             } else {
                 DialogUtil.showToast(context, context.getString(R.string.permission_denied));
             }
+        });
+
+        holder.binding.itemNameView.setOnClickListener(view -> {
+            Intent intent = new Intent(context, DetailActivity.class);
+            intent.putExtra("id", student.getId());
+            context.startActivity(intent);
         });
     }
 

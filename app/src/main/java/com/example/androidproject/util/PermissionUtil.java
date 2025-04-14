@@ -9,6 +9,7 @@ import com.example.androidproject.callback.PermissionCallback;
 import java.util.HashSet;
 
 public class PermissionUtil {
+    // Permission 띄워주고 callback 에 반환값
     public static void checkAllPermission(ComponentActivity activity, PermissionCallback callback) {
         HashSet<String> permissionSet = new HashSet<>();
         permissionSet.add("android.permission.CALL_PHONE");

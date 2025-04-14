@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 result -> {
                     // 새로운 학생 정보 ArrayList 에 add
                     Intent intent = result.getData();
-                    int id = intent.getIntExtra("id", 0);
+                    int id = (int) intent.getLongExtra("id", 0);
                     String name = intent.getStringExtra("name");
                     String email = intent.getStringExtra("email");
                     String phone = intent.getStringExtra("phone");
@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
+        // isAllGranted 에 Callback 값이 반환
         PermissionUtil.checkAllPermission(this, isAllGranted -> {
             if (isAllGranted) {
                 makeRecyclerView();
