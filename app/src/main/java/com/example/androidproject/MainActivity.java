@@ -6,8 +6,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> addLauncher;
     ArrayList<Student> datas = new ArrayList<>();
     MainAdapter adapter;
+    long backPressedTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +79,19 @@ public class MainActivity extends AppCompatActivity {
                 makeRecyclerView();
             } else {
                 showDialog();
+            }
+        });
+
+        // 앱 종료 Toast
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (System.currentTimeMillis() > backPressedTime + 2000) {
+                    backPressedTime = System.currentTimeMillis();
+                    Toast.makeText(MainActivity.this, R.string.main_back_end, Toast.LENGTH_SHORT).show();
+                } else {
+                    finish();
+                }
             }
         });
     }
