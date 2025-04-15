@@ -7,10 +7,13 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -120,7 +123,7 @@ public class DetailActivity extends AppCompatActivity {
     private void setInitScoreData(int id) {
         DBHelper helper = new DBHelper(this);
         SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from tb_score where student_id=? order by date",
+        Cursor cursor = db.rawQuery("select * from tb_score where student_id=? order by date desc",
                 new String[]{String.valueOf(id)});
 
         scoreList = new ArrayList<>();
@@ -174,5 +177,23 @@ public class DetailActivity extends AppCompatActivity {
             intent.setType("image/*");
             requestGalleryLauncher.launch(intent);
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_share, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // 시험 점수 공유
+        if (item.getItemId() == R.id.menu_detail_share) {
+            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + student.getPhone()));
+            intent.putExtra("sms_body", scoreList.get(0).get("date") + " 의 점수: " + scoreList.get(0).get("score"));
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

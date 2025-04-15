@@ -25,7 +25,12 @@
             android:exported="false" />
         <activity
             android:name=".DetailActivity"
-            android:exported="false" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.SENDTO" />
+                <data android:scheme="smsto" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".AddStudentActivity"
             android:exported="false" />
