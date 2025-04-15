@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.example.androidproject.DetailActivity;
 import com.example.androidproject.R;
 import com.example.androidproject.databinding.ItemMainBinding;
 import com.example.androidproject.model.Student;
+import com.example.androidproject.util.BitmapUtil;
 import com.example.androidproject.util.DialogUtil;
 import com.example.androidproject.util.PermissionUtil;
 
@@ -69,6 +71,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainViewHolder> {
             intent.putExtra("id", student.getId());
             context.startActivity(intent);
         });
+
+        Bitmap bitmap = BitmapUtil.getGalleryBitmapFromFile(context, student.getPhoto());
+        if (bitmap != null) {
+            holder.binding.itemImageView.setImageBitmap(bitmap);
+        }
     }
 
     @Override

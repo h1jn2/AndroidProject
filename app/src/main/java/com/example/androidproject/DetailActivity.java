@@ -164,6 +164,10 @@ public class DetailActivity extends AppCompatActivity {
 
         db.close();
 
+        Bitmap bitmap = BitmapUtil.getGalleryBitmapFromFile(this, photoFilePath);
+        if (bitmap != null)
+            binding.detailImage.setImageBitmap(bitmap);
+
         binding.detailImage.setOnClickListener(view -> {
             Intent intent = new Intent(Intent.ACTION_PICK,
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
