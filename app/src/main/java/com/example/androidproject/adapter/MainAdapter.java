@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -33,12 +34,14 @@ class MainViewHolder extends RecyclerView.ViewHolder {
 }
 
 public class MainAdapter extends RecyclerView.Adapter<MainViewHolder> {
+    ArrayList<Student> originDatas; // filter 시 비교를 위해 full 데이터
     ArrayList<Student> datas;
     Activity context;
 
     public MainAdapter (Activity context, ArrayList<Student> datas) {
         this.context = context;
         this.datas = datas;
+        this.originDatas = new ArrayList<>(datas);
     }
 
     @NonNull
@@ -90,5 +93,21 @@ public class MainAdapter extends RecyclerView.Adapter<MainViewHolder> {
         } else {
             DialogUtil.showToast(context, context.getString(R.string.main_list_phone_error));
         }
+    }
+
+    // SearchView 에 입력한 텍스트에 따라 목록 필터링
+    public void filter(String text) {
+        datas.clear();
+        if (text.isEmpty()) {
+            datas.addAll(originDatas);
+        } else {
+            text = text.toLowerCase();
+            for (Student item: originDatas) {
+                if (item.getName().toLowerCase().contains(text)) {
+                    datas.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }

@@ -6,4 +6,10 @@
         android:icon="@android:drawable/ic_menu_add"
         android:title="add"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_main_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always" />
 </menu>
