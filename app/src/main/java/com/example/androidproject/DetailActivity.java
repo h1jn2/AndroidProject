@@ -152,13 +152,14 @@ public class DetailActivity extends AppCompatActivity {
             SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
             map.put("score", cursor.getString(3));
             map.put("date", sd.format(d));
+            map.put("_id", cursor.getString(0));
             scoreList.add(map);
             if (cursor.getPosition() == 0)  score = cursor.getString(3);
         }
         db.close();
 
         binding.detailRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new DetailAdapter(this, scoreList);
+        adapter = new DetailAdapter(this, scoreList, binding.detailDoughnutView);
         binding.detailRecyclerView.setAdapter(adapter);
         binding.detailRecyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));

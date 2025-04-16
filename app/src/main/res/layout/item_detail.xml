@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/detailItemScore"
@@ -16,5 +18,13 @@
         android:id="@+id/detailItemDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/detailItemDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:clickable="true"
+        android:src="@android:drawable/ic_menu_delete" />
 
 </LinearLayout>
