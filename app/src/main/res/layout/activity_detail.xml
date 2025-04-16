@@ -41,7 +41,7 @@
         app:layout_constraintStart_toEndOf="@+id/detailImage"
         app:layout_constraintTop_toTopOf="@+id/detailImage" />
 
-    <com.example.androidproject.util.DoughnutView
+    <com.example.androidproject.DoughnutView
         android:id="@+id/detailDoughnutView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

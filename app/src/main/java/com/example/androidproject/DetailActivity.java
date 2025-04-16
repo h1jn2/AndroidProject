@@ -66,19 +66,21 @@ public class DetailActivity extends AppCompatActivity {
         ActivityResultLauncher<Intent> addScoreLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+                    if (result.getData() != null) {
                         Intent intent = result.getData();
                         String score = intent.getStringExtra("score");
                         long date = intent.getLongExtra("date", 0);
 
-                    HashMap<String, String> map = new HashMap<>();
-                    Date d = new Date(date);
-                    SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-                    map.put("score", score);
-                    map.put("date", sd.format(d));
+                        HashMap<String, String> map = new HashMap<>();
+                        Date d = new Date(date);
+                        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+                        map.put("score", score);
+                        map.put("date", sd.format(d));
 
-                    scoreList.add(map);
-                    setScoreProgress(score);
-                    adapter.notifyDataSetChanged();
+                        scoreList.add(map);
+                        setScoreProgress(score);
+                        adapter.notifyDataSetChanged();
+                    }
                 });
         binding.detailAddScoreButton.setOnClickListener(view -> {
             Intent intent = new Intent(this, ScoreAddActivity.class);
@@ -101,7 +103,7 @@ public class DetailActivity extends AppCompatActivity {
                         // 유저가 선택한 사진의 식별자 값을 Uri 객체로 념겨줌
                         Uri uri = result.getData().getData();
                         // uri 로 식별되는 사진의 경로를 획득, db 에 저장했다가 나중에 이용하기 위해
-                        String[] proj = new String[] {MediaStore.Images.Media.DATA};
+                        String[] proj = new String[]{MediaStore.Images.Media.DATA};
                         Cursor galleryCursor = getContentResolver().query(
                                 uri, proj, null, null, null
                         );
@@ -154,7 +156,7 @@ public class DetailActivity extends AppCompatActivity {
             map.put("date", sd.format(d));
             map.put("_id", cursor.getString(0));
             scoreList.add(map);
-            if (cursor.getPosition() == 0)  score = cursor.getString(3);
+            if (cursor.getPosition() == 0) score = cursor.getString(3);
         }
         db.close();
 

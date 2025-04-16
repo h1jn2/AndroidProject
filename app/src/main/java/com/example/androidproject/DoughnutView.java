@@ -1,4 +1,4 @@
-package com.example.androidproject.util;
+package com.example.androidproject;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -7,12 +7,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-
-import com.example.androidproject.R;
 
 public class DoughnutView extends View {
     private Context context;

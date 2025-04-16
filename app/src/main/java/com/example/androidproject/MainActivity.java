@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -58,19 +59,20 @@ public class MainActivity extends AppCompatActivity {
         addLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    // 새로운 학생 정보 ArrayList 에 add
-                    Intent intent = result.getData();
-                    int id = (int) intent.getLongExtra("id", 0);
-                    String name = intent.getStringExtra("name");
-                    String email = intent.getStringExtra("email");
-                    String phone = intent.getStringExtra("phone");
-                    String memo = intent.getStringExtra("memo");
-                    String photo = intent.getStringExtra("photo");
+                    if (result.getData() != null) {
+                        Intent intent = result.getData();
+                        int id = (int) intent.getLongExtra("id", 0);
+                        String name = intent.getStringExtra("name");
+                        String email = intent.getStringExtra("email");
+                        String phone = intent.getStringExtra("phone");
+                        String memo = intent.getStringExtra("memo");
+                        String photo = intent.getStringExtra("photo");
 
-                    Student student = new Student(id, name, email, phone, memo, photo);
+                        Student student = new Student(id, name, email, phone, memo, photo);
 
-                    datas.add(student);
-                    adapter.notifyDataSetChanged();
+                        datas.add(student);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
         );
 

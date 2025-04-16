@@ -83,7 +83,6 @@ public class ChartActivity extends AppCompatActivity {
                 }
             }
             buffer.append("]");
-            Log.d("kkang", buffer.toString());
             return buffer.toString();
         }
     }
