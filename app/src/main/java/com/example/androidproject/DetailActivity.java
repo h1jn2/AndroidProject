@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -76,6 +77,7 @@ public class DetailActivity extends AppCompatActivity {
                     map.put("date", sd.format(d));
 
                     scoreList.add(map);
+                    setScoreProgress(score);
                     adapter.notifyDataSetChanged();
                 });
         binding.detailAddScoreButton.setOnClickListener(view -> {
@@ -127,6 +129,14 @@ public class DetailActivity extends AppCompatActivity {
         );
     }
 
+    private void setScoreProgress(String score) {
+        int progressValue = 0;
+        if (!score.isEmpty()) {
+            progressValue = Integer.parseInt(score);
+        }
+        binding.detailDoughnutView.setProgress(progressValue);
+    }
+
     private void setInitScoreData(int id) {
         DBHelper helper = new DBHelper(this);
         SQLiteDatabase db = helper.getReadableDatabase();
@@ -134,6 +144,7 @@ public class DetailActivity extends AppCompatActivity {
                 new String[]{String.valueOf(id)});
 
         scoreList = new ArrayList<>();
+        String score = "";
 
         while (cursor.moveToNext()) {
             HashMap<String, String> map = new HashMap<>();
@@ -142,6 +153,7 @@ public class DetailActivity extends AppCompatActivity {
             map.put("score", cursor.getString(3));
             map.put("date", sd.format(d));
             scoreList.add(map);
+            if (cursor.getPosition() == 0)  score = cursor.getString(3);
         }
         db.close();
 
@@ -150,6 +162,8 @@ public class DetailActivity extends AppCompatActivity {
         binding.detailRecyclerView.setAdapter(adapter);
         binding.detailRecyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
+
+        setScoreProgress(score);
     }
 
     private void setInitStudentData(int id) {
@@ -184,6 +198,7 @@ public class DetailActivity extends AppCompatActivity {
             intent.setType("image/*");
             requestGalleryLauncher.launch(intent);
         });
+
     }
 
     @Override
