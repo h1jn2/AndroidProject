@@ -84,6 +84,13 @@ public class DetailActivity extends AppCompatActivity {
             addScoreLauncher.launch(intent);
         });
 
+        binding.detailScoreChartButton.setOnClickListener(view -> {
+            Intent intent = new Intent(this, ChartActivity.class);
+            intent.putExtra("id", id);
+            intent.putExtra("name", student.getName());
+            startActivity(intent);
+        });
+
         requestGalleryLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
