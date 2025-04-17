@@ -39,6 +39,7 @@ public class DetailActivity extends AppCompatActivity {
     ArrayList<Map<String, String>> scoreList;
     DetailAdapter adapter;
     ActivityResultLauncher<Intent> requestGalleryLauncher;
+    ActivityResultLauncher<Intent> requestEditLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,32 @@ public class DetailActivity extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
                     }
                 });
+
+        requestEditLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getData() != null) {
+                        Intent intent = result.getData();
+                        String name = intent.getStringExtra("name");
+                        String email = intent.getStringExtra("email");
+                        String phone = intent.getStringExtra("phone");
+
+                        if (name != null && !name.equals(student.getName())) {
+                            student.setName(name);
+                            binding.detailName.setText(name);
+                        }
+                        if (email != null && !email.equals(student.getEmail())) {
+                            student.setEmail(email);
+                            binding.detailEmail.setText(email);
+                        }
+                        if (phone != null && !phone.equals(student.getPhone())) {
+                            student.setPhone(phone);
+                            binding.detailPhone.setText(phone);
+                        }
+                    }
+                }
+        );
+
         binding.detailAddScoreButton.setOnClickListener(view -> {
             Intent intent = new Intent(this, ScoreAddActivity.class);
             intent.putExtra("id", id);
@@ -223,6 +250,10 @@ public class DetailActivity extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + student.getPhone()));
             intent.putExtra("sms_body", scoreList.get(0).get("date") + " 의 점수: " + scoreList.get(0).get("score"));
             startActivity(intent);
+        } else if (item.getItemId() == R.id.menu_detail_edit) {
+            Intent intent = new Intent(this, AddStudentActivity.class);
+            intent.putExtra("id", student.getId());
+            requestEditLauncher.launch(intent);
         }
         return super.onOptionsItemSelected(item);
     }

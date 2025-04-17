@@ -2,8 +2,10 @@ package com.example.androidproject;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,6 +22,7 @@ import com.example.androidproject.util.DialogUtil;
 
 public class AddStudentActivity extends AppCompatActivity {
     ActivityAddStudentBinding binding;
+    int id = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +39,32 @@ public class AddStudentActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
 
+        Intent intent = getIntent();
+        id = intent.getIntExtra("id", 0);
+
+        if (id != 0) setInitStudentView();
+    }
+
+    private void setInitStudentView() {
+        DBHelper helper = new DBHelper(this);
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from tb_student where _id=?", new String[]{String.valueOf(id)});
+        String name = "";
+        String email = "";
+        String phone = "";
+        String memo = "";
+        while (cursor.moveToNext()) {
+            name = cursor.getString(1);
+            email = cursor.getString(2);
+            phone = cursor.getString(3);
+            memo = cursor.getString(5);
+        }
+        db.close();
+
+        binding.addName.setText(name);
+        binding.addEmail.setText(email);
+        binding.addPhone.setText(phone);
+        binding.addMemo.setText(memo);
     }
 
     @Override
@@ -60,6 +89,18 @@ public class AddStudentActivity extends AppCompatActivity {
 
         if (name == null || name.equals("")) {
             DialogUtil.showToast(this, getString(R.string.add_name_null));
+        } else if (id != 0) {
+            DBHelper helper = new DBHelper(this);
+            SQLiteDatabase db = helper.getWritableDatabase();
+            db.execSQL("update tb_student set name=?, email=?, phone=?, memo=? where _id=?", new String[]{name, email, phone, memo, String.valueOf(id)});
+            db.close();
+
+            Intent intent = getIntent();
+            setResult(RESULT_OK, intent);
+            intent.putExtra("name", name);
+            intent.putExtra("email", email);
+            intent.putExtra("phone", phone);
+            finish();
         } else {
             DBHelper helper = new DBHelper(this);
             SQLiteDatabase db = helper.getWritableDatabase();
