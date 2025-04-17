@@ -70,7 +70,5 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailViewHolder> {
         doughnutView.setProgress(progressValue);
         notifyItemRemoved(position);
         notifyItemRangeRemoved(position, getItemCount());
-
-        Log.d("kkang", ""+getItemCount());
     }
 }

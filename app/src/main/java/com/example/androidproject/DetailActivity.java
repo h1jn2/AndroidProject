@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -29,6 +31,7 @@ import com.example.androidproject.util.BitmapUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,6 +81,7 @@ public class DetailActivity extends AppCompatActivity {
                         map.put("date", sd.format(d));
 
                         scoreList.add(map);
+                        // 새로 추가된 score 값 전달하여 Progress 에 적용
                         setScoreProgress(score);
                         adapter.notifyDataSetChanged();
                     }
@@ -95,6 +99,7 @@ public class DetailActivity extends AppCompatActivity {
                         if (name != null && !name.equals(student.getName())) {
                             student.setName(name);
                             binding.detailName.setText(name);
+
                         }
                         if (email != null && !email.equals(student.getEmail())) {
                             student.setEmail(email);
@@ -161,6 +166,19 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent intent = getIntent();
+                int position = intent.getIntExtra("position", 0);
+                intent.putExtra("name", student.getName());
+                intent.putExtra("photo", student.getPhoto());
+                intent.putExtra("position", position);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
     }
 
     private void setScoreProgress(String score) {
@@ -245,12 +263,13 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        // 시험 점수 공유
         if (item.getItemId() == R.id.menu_detail_share) {
             Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + student.getPhone()));
             intent.putExtra("sms_body", scoreList.get(0).get("date") + " 의 점수: " + scoreList.get(0).get("score"));
             startActivity(intent);
-        } else if (item.getItemId() == R.id.menu_detail_edit) {
+        }
+        // AddStudentActivity 재활용
+        else if (item.getItemId() == R.id.menu_detail_edit) {
             Intent intent = new Intent(this, AddStudentActivity.class);
             intent.putExtra("id", student.getId());
             requestEditLauncher.launch(intent);

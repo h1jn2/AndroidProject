@@ -45,7 +45,7 @@
         android:id="@+id/detailDoughnutView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:customColorValue="#E91E63"
+        app:customColorValue="#2196F3"
         app:customColorOption="pliabilityColor"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="16dp"

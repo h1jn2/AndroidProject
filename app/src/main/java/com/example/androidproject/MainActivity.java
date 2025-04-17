@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.androidproject.adapter.MainAdapter;
+import com.example.androidproject.callback.ActivityLaunchCallback;
 import com.example.androidproject.callback.DialogCallback;
 import com.example.androidproject.databinding.ActivityMainBinding;
 import com.example.androidproject.db.DBHelper;
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Student> datas = new ArrayList<>();
     MainAdapter adapter;
     long backPressedTime = 0;
+    ActivityLaunchCallback activityLaunchCallback;
+    ActivityResultLauncher<Intent> detailLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +79,23 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
+        detailLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getData() != null) {
+                        Intent intent = result.getData();
+                        int id = intent.getIntExtra("id", 0);
+                        int position = intent.getIntExtra("position", 0);
+                        String name = intent.getStringExtra("name");
+                        String photo = intent.getStringExtra("photo");
+
+                        datas.get(position).setName(name);
+                        datas.get(position).setPhoto(photo);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+        );
+
         // isAllGranted 에 Callback 값이 반환
         PermissionUtil.checkAllPermission(this, isAllGranted -> {
             if (isAllGranted) {
@@ -89,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
+                // 2초 이내에 BackButton 클릭
                 if (System.currentTimeMillis() > backPressedTime + 2000) {
                     backPressedTime = System.currentTimeMillis();
                     Toast.makeText(MainActivity.this, R.string.main_back_end, Toast.LENGTH_SHORT).show();
@@ -97,11 +118,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        activityLaunchCallback = new ActivityLaunchCallback() {
+            @Override
+            public void onLaunchCallback(Intent intent) {
+                detailLauncher.launch(intent);
+            }
+        };
     }
 
     private void makeRecyclerView() {
         getListData();
-        adapter = new MainAdapter(this, datas);
+        adapter = new MainAdapter(this, datas, activityLaunchCallback);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerView.setAdapter(adapter);
         binding.recyclerView.addItemDecoration(new DividerItemDecoration(this,
@@ -126,21 +154,23 @@ public class MainActivity extends AppCompatActivity {
 
             datas.add(student);
         }
+
+        db.close();
     }
 
     private void showDialog() {
         DialogUtil.showMessageDialog(this, getString(R.string.permission_denied),
                 "확인", null, new DialogCallback() {
-            @Override
-            public void onPositiveCallback() {
+                    @Override
+                    public void onPositiveCallback() {
 
-            }
+                    }
 
-            @Override
-            public void onNegativeCallback() {
+                    @Override
+                    public void onNegativeCallback() {
 
-            }
-        });
+                    }
+                });
     }
 
     @Override

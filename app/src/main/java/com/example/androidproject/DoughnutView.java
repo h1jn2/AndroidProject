@@ -51,12 +51,14 @@ public class DoughnutView extends View {
             }
         }
 
+        // 받아온 progressColor 적용한 Paint
         progressPaint = new Paint();
         progressPaint.setAntiAlias(true);
         progressPaint.setStyle(Paint.Style.STROKE);
         progressPaint.setColor(progressColor);
         progressPaint.setStrokeWidth(20);
 
+        // 기본 회색 배경 Paint
         backgroundPaint = new Paint();
         backgroundPaint.setStyle(Paint.Style.STROKE);
         backgroundPaint.setColor(Color.LTGRAY);

@@ -89,10 +89,13 @@ public class AddStudentActivity extends AppCompatActivity {
 
         if (name == null || name.equals("")) {
             DialogUtil.showToast(this, getString(R.string.add_name_null));
-        } else if (id != 0) {
+        }
+        // 받아온 id가 있을 경우 데이터 update
+        else if (id != 0) {
             DBHelper helper = new DBHelper(this);
             SQLiteDatabase db = helper.getWritableDatabase();
-            db.execSQL("update tb_student set name=?, email=?, phone=?, memo=? where _id=?", new String[]{name, email, phone, memo, String.valueOf(id)});
+            db.execSQL("update tb_student set name=?, email=?, phone=?, memo=? where _id=?",
+                    new String[]{name, email, phone, memo, String.valueOf(id)});
             db.close();
 
             Intent intent = getIntent();

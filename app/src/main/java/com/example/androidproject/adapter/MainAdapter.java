@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidproject.DetailActivity;
 import com.example.androidproject.R;
+import com.example.androidproject.callback.ActivityLaunchCallback;
 import com.example.androidproject.databinding.ItemMainBinding;
 import com.example.androidproject.model.Student;
 import com.example.androidproject.util.BitmapUtil;
@@ -37,11 +38,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainViewHolder> {
     ArrayList<Student> originDatas; // filter 시 비교를 위해 full 데이터
     ArrayList<Student> datas;
     Activity context;
+    ActivityLaunchCallback launchCallback;
 
-    public MainAdapter (Activity context, ArrayList<Student> datas) {
+    public MainAdapter (Activity context, ArrayList<Student> datas, ActivityLaunchCallback launchCallback) {
         this.context = context;
         this.datas = datas;
         this.originDatas = new ArrayList<>(datas);
+        this.launchCallback = launchCallback;
     }
 
     @NonNull
@@ -72,12 +75,16 @@ public class MainAdapter extends RecyclerView.Adapter<MainViewHolder> {
         holder.binding.itemNameView.setOnClickListener(view -> {
             Intent intent = new Intent(context, DetailActivity.class);
             intent.putExtra("id", student.getId());
-            context.startActivity(intent);
+            intent.putExtra("position", position);
+
+            launchCallback.onLaunchCallback(intent);
         });
 
         Bitmap bitmap = BitmapUtil.getGalleryBitmapFromFile(context, student.getPhoto());
         if (bitmap != null) {
             holder.binding.itemImageView.setImageBitmap(bitmap);
+        } else {
+            holder.binding.itemImageView.setImageResource(R.drawable.ic_student_small);
         }
     }
 
