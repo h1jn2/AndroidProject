@@ -84,8 +84,23 @@
         android:textColor="#555555"
         android:background="@drawable/outline_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/detailScoreChartButton"
+        app:layout_constraintStart_toEndOf="@id/detailMemoButton"
         app:layout_constraintTop_toBottomOf="@+id/detailEmail" />
+
+    <Button
+        android:id="@+id/detailMemoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:minHeight="30dp"
+        android:padding="1dp"
+        android:text="memo"
+        android:textColor="#555555"
+        android:background="@drawable/outline_button"
+        app:layout_constraintEnd_toStartOf="@+id/detailAddScoreButton"
+        app:layout_constraintStart_toEndOf="@+id/detailScoreChartButton"
+        app:layout_constraintTop_toBottomOf="@+id/detailEmail" />
+
     <Button
         android:id="@+id/detailScoreChartButton"
         android:layout_width="wrap_content"
@@ -96,9 +111,17 @@
         android:text="score chart"
         android:textColor="#555555"
         android:background="@drawable/outline_button"
-        app:layout_constraintEnd_toStartOf="@id/detailAddScoreButton"
+        app:layout_constraintEnd_toStartOf="@id/detailMemoButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detailPhone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000000"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintBottom_toTopOf="@id/detailRecyclerView"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/detailRecyclerView"

@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -92,6 +91,12 @@ public class DetailActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ChartActivity.class);
             intent.putExtra("id", id);
             intent.putExtra("name", student.getName());
+            startActivity(intent);
+        });
+
+        binding.detailMemoButton.setOnClickListener(view -> {
+            Intent intent = new Intent(this, MemoActivity.class);
+            intent.putExtra("id", id);
             startActivity(intent);
         });
 
@@ -206,7 +211,7 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_share, menu);
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
 
         return super.onCreateOptionsMenu(menu);
     }
