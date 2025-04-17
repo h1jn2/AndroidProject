@@ -2,5 +2,9 @@
 <resources>
     <declare-styleable name="DoughnutView">
         <attr name="customColorValue" format="color"/>
+        <attr name="customColorOption" format="enum">
+            <enum name="defaultColor" value="0"/>
+            <enum name="pliabilityColor" value="1"/>
+        </attr>
     </declare-styleable>
 </resources>

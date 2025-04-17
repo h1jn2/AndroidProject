@@ -12,11 +12,14 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 public class DoughnutView extends View {
+    final int COLOR_OPTION_DEFAULT = 0;
+    final int COLOR_OPTION_PLIABILITY = 1;
     private Context context;
     private Paint progressPaint;
     private Paint backgroundPaint;
     private int progressColor;
     private int progress;
+    private int colorOption;
 
     public DoughnutView(Context context) {
         super(context);
@@ -39,7 +42,13 @@ public class DoughnutView extends View {
     private void init(AttributeSet attrs){
         if (attrs != null) {
             TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.DoughnutView);
-            progressColor = array.getColor(R.styleable.DoughnutView_customColorValue, Color.BLUE);
+
+            try {
+                progressColor = array.getColor(R.styleable.DoughnutView_customColorValue, Color.BLUE);
+                colorOption = array.getInteger(R.styleable.DoughnutView_customColorOption, COLOR_OPTION_DEFAULT);
+            } finally {
+                array.recycle();
+            }
         }
 
         progressPaint = new Paint();
@@ -56,6 +65,13 @@ public class DoughnutView extends View {
 
     public void setProgress(int value) {
         progress = value;
+        if (colorOption == COLOR_OPTION_PLIABILITY) {
+            if (progress >= 70) progressColor = Color.parseColor("#009000");
+            else if (progress >= 40) progressColor = Color.parseColor("#ff7f00");
+            else progressColor = Color.RED;
+
+            progressPaint.setColor(progressColor);
+        }
         invalidate();
     }
 
